@@ -1797,7 +1797,11 @@ h3 {
     }
 
     .service-card-flip {
-        height: 320px;
+        height: 400px;
+    }
+
+    .service-card-back {
+        padding: 1.5rem;
     }
 
     .showcase-right {
