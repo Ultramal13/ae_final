@@ -104,9 +104,9 @@ function initFlipCards() {
     const cards = document.querySelectorAll('.service-card-flip');
 
     cards.forEach(card => {
-        // Touch / click flip for mobile
+        // Touch / click flip for mobile and tablets
         card.addEventListener('click', () => {
-            if (window.innerWidth <= 900) {
+            if (window.matchMedia('(hover: none), (pointer: coarse)').matches || window.innerWidth <= 900) {
                 card.classList.toggle('flipped');
             }
         });
@@ -226,14 +226,25 @@ function initContactForm() {
    9. PARALLAX BACKGROUND (subtle)
    ============================================================ */
 function initParallax() {
-    const hero = document.querySelector('.hero');
-    const bgEl = document.querySelector('.hero-bg-radial');
-    if (!hero || !bgEl) return;
+    const parallaxImg = document.querySelector('.parallax-img');
+    let ticking = false;
 
-    window.addEventListener('scroll', debounce(() => {
-        const scrolled = window.scrollY;
-        bgEl.style.transform = `translateX(-50%) translateY(${scrolled * .2}px)`;
-    }, 5), { passive: true });
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (parallaxImg) {
+                    const rect = parallaxImg.parentElement.getBoundingClientRect();
+                    // Si el contenedor está en pantalla
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        const yPos = (window.innerHeight - rect.top) * 0.15;
+                        parallaxImg.style.transform = `translateY(-${yPos}px)`;
+                    }
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 }
 
 /* ============================================================

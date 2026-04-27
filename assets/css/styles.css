@@ -833,7 +833,16 @@ h3 {
 .service-card-flip {
     height: 380px;
     perspective: 1200px;
+    position: relative;
     cursor: pointer;
+}
+
+/* Overlay invisible para mantener el área de interacción estable y evitar loop de hover en desktop */
+.service-card-flip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 10;
 }
 
 .service-card-inner {
@@ -844,7 +853,12 @@ h3 {
     transition: transform .8s cubic-bezier(.16, .9, .3, 1);
 }
 
-.service-card-flip:hover .service-card-inner,
+@media (hover: hover) and (pointer: fine) {
+    .service-card-flip:hover .service-card-inner {
+        transform: rotateY(180deg);
+    }
+}
+
 .service-card-flip.flipped .service-card-inner {
     transform: rotateY(180deg);
 }
@@ -862,6 +876,8 @@ h3 {
 /* Front */
 .service-card-front {
     background: #e8eef4;
+    z-index: 2;
+    transform: rotateY(0deg);
 }
 
 .service-img {
@@ -911,6 +927,7 @@ h3 {
 /* Back */
 .service-card-back {
     transform: rotateY(180deg);
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1120,14 +1137,17 @@ h3 {
     position: relative;
     border-radius: var(--radius-xl);
     overflow: hidden;
+    height: 500px;
 }
 
 .nosotros-img-frame img {
     width: 100%;
-    height: 500px;
+    height: 125%;
     object-fit: cover;
     filter: brightness(.75) saturate(1.1);
     transition: filter .4s;
+    will-change: transform;
+    transform-origin: center top;
 }
 
 .nosotros-img-frame:hover img {
@@ -1144,33 +1164,6 @@ h3 {
 
 .nosotros-img-wrap {
     position: relative;
-}
-
-.floating-badge {
-    position: absolute;
-    bottom: -1.5rem;
-    right: -1.5rem;
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: 1rem 1.25rem;
-}
-
-.floating-badge span {
-    font-size: 1.5rem;
-}
-
-.floating-badge strong {
-    display: block;
-    font-size: .85rem;
-    font-weight: 700;
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.floating-badge small {
-    font-size: .7rem;
-    color: rgba(255, 255, 255, 0.7);
 }
 
 .nosotros-p {
@@ -1773,11 +1766,7 @@ h3 {
     }
 
     .nosotros-img-frame img {
-        height: 320px;
-    }
-
-    .floating-badge {
-        right: 0;
+        height: 125%;
     }
 }
 
