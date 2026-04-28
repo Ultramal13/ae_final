@@ -142,7 +142,7 @@ function initScrollReveal() {
 /* ============================================================
    7. ANIMATED COUNTERS
    ============================================================ */
-function animateCounter(el, target, duration = 1800) {
+function animateCounter(el, target, duration = 2500) {
     const startTime = performance.now();
     const start = 0;
 
@@ -270,6 +270,57 @@ function initActiveNav() {
 }
 
 /* ============================================================
+   11. TYPING ANIMATION
+   ============================================================ */
+function initTypingAnimation() {
+    const elements = document.querySelectorAll('.type-writer');
+    if (!elements.length) return;
+
+    const typeEffect = (el) => {
+        // Use textContent to preserve all whitespace characters
+        const fullText = el.getAttribute('data-text') || el.textContent;
+        
+        if (!el.getAttribute('data-text')) {
+            el.setAttribute('data-text', fullText);
+        }
+        
+        el.textContent = '';
+        el.classList.add('is-typing');
+        el.classList.remove('typing-done');
+
+        setTimeout(() => {
+            el.classList.add('visible-typing');
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < fullText.length) {
+                    el.textContent += fullText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    el.classList.add('typing-done');
+                }
+            }, 70 + Math.random() * 50);
+        }, 300);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                typeEffect(entry.target);
+                // We might want to re-type if it leaves and comes back, 
+                // but usually once is better for titles.
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.8,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    elements.forEach(el => observer.observe(el));
+}
+
+/* ============================================================
    UTILITY: debounce
    ============================================================ */
 function debounce(fn, wait) {
@@ -294,4 +345,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initParallax();
     initActiveNav();
+    initTypingAnimation();
 });
